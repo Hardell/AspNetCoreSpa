@@ -19,6 +19,7 @@ using AspNetCoreSpa.Infrastructure;
 using System.IO;
 using System.Linq;
 using AspNetCoreSpa.Core;
+using System.Threading.Tasks;
 
 namespace AspNetCoreSpa.Web.Extensions
 {
@@ -40,6 +41,7 @@ namespace AspNetCoreSpa.Web.Extensions
 
             return services;
         }
+
         public static IServiceCollection AddCustomizedMvc(this IServiceCollection services)
         {
             services.AddMvc(options =>
@@ -55,19 +57,21 @@ namespace AspNetCoreSpa.Web.Extensions
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             return services;
         }
+
         public static IServiceCollection AddCustomIdentity(this IServiceCollection services)
         {
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
                 // options for user and password can be set here
                 // options.Password.RequiredLength = 4;
-                // options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireNonAlphanumeric = false;
             })
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
             return services;
         }
+
         public static IServiceCollection AddCustomOpenIddict(this IServiceCollection services, IHostingEnvironment env)
         {
             // Configure Identity to use the same JWT claims as OpenIddict instead
@@ -160,7 +164,21 @@ namespace AspNetCoreSpa.Web.Extensions
                 options.DefaultForbidScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-               .AddOAuthValidation()
+               .AddOAuthValidation(options =>
+               {
+                   options.Events = new AspNet.Security.OAuth.Validation.OAuthValidationEvents
+                   {
+                       // Note: for SignalR connections, the default Authorization header does not work,
+                       // because the WebSockets JS API doesn't allow setting custom parameters.
+                       // To work around this limitation, the access token is retrieved from the query string.
+                       OnRetrieveToken = context =>
+                       {
+                           context.Token = context.Request.Query["access_token"];
+
+                           return Task.CompletedTask;
+                       }
+                   };
+               })
                // https://console.developers.google.com/projectselector/apis/library?pli=1
                .AddGoogle(options =>
                {
@@ -188,6 +206,7 @@ namespace AspNetCoreSpa.Web.Extensions
 
             return services;
         }
+
         public static IServiceCollection AddCustomDbContext(this IServiceCollection services)
         {
             // Add framework services.
@@ -204,7 +223,6 @@ namespace AspNetCoreSpa.Web.Extensions
                     var connection = Startup.Configuration["Data:SqlLiteConnectionString"];
                     options.UseSqlite(connection);
                     options.UseSqlite(connection, b => b.MigrationsAssembly("AspNetCoreSpa.Web"));
-
                 }
                 else
                 {
@@ -238,6 +256,7 @@ namespace AspNetCoreSpa.Web.Extensions
 
             return services;
         }
+
         public static IServiceCollection RegisterCustomServices(this IServiceCollection services)
         {
             // New instance every time, only configuration class needs so its ok
@@ -251,6 +270,5 @@ namespace AspNetCoreSpa.Web.Extensions
             services.AddScoped<ApiExceptionFilter>();
             return services;
         }
-
     }
 }

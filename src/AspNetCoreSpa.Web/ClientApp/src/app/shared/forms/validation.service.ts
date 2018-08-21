@@ -7,7 +7,7 @@
             maxlength: 'Maximum length is ' + fieldLength,
             invalidCreditCard: 'Invalid credit card number',
             invalidEmailAddress: 'Invalid email address',
-            invalidPassword: 'Password must be at least 6 characters long, and contain a number and special character.'
+            invalidPassword: 'Password must be at least 6 characters long, and contain a number.'
         };
         return config[code];
     }
@@ -25,7 +25,7 @@
     public static passwordValidator(control: any): any {
         // {6,100}           - Assert password is between 6 and 100 characters
         // (?=.*[0-9])       - Assert a string has at least one number
-        if (control.value && control.value.match(/^(?=.*[0-9])[a-zA-Z0-9!"@#$%^&*]{6,100}$/)) {
+        if (control.value && control.value.match(/^(?=.*[0-9])[\S]{6,100}$/)) {
             return undefined;
         } else {
             return { invalidPassword: true };

@@ -24,20 +24,21 @@ export class ChatComponent implements OnInit {
   }
 
   ngOnInit() {
-    this._hubConnection = new HubConnectionBuilder().withUrl(`${this.baseUrl}chathub`).build();
+    const token = localStorage.getItem('access_token');
+    this._hubConnection = new HubConnectionBuilder().withUrl(`${this.baseUrl}chathub?access_token=${token}`).build();
 
     this._hubConnection.on('send', (data: any) => {
-      const received = `Received: ${data}`;
-      this.messages.push(received);
+    const received = `Received: ${data}`;
+    this.messages.push(received);
     });
 
     this._hubConnection.start()
-      .then(() => {
-        console.log('Hub connection started');
-      })
-      .catch(err => {
-        console.log('Error while establishing connection: ' + err);
-      });
+    .then(() => {
+    console.log('Hub connection started');
+    })
+    .catch(err => {
+    console.log('Error while establishing connection: ' + err);
+    });
   }
 
 }

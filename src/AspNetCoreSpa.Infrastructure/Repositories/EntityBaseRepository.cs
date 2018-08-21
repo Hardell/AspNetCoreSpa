@@ -101,9 +101,9 @@ namespace AspNetCoreSpa.Infrastructure.Repositories
             dbEntityEntry.State = EntityState.Deleted;
         }
 
-        public virtual void Commit()
+        public virtual Task Commit()
         {
-            _context.SaveChangesAsync();
+            return _context.SaveChangesAsync();
         }
     }
 }
