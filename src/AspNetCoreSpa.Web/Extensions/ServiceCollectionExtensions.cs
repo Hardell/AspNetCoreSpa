@@ -10,13 +10,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using AspNetCoreSpa.Core.Entities;
 using AspNetCoreSpa.Infrastructure;
-using System.IO;
 using System.Linq;
 using AspNetCoreSpa.Core;
 using System.Threading.Tasks;
@@ -163,8 +161,7 @@ namespace AspNetCoreSpa.Web.Extensions
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultForbidScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-               .AddOAuthValidation(options =>
+            }).AddOAuthValidation(options =>
                {
                    options.Events = new AspNet.Security.OAuth.Validation.OAuthValidationEvents
                    {
