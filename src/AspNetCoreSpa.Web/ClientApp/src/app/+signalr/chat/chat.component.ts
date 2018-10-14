@@ -16,10 +16,8 @@ export class ChatComponent implements OnInit {
   constructor(@Inject('BASE_URL') private baseUrl: string) { }
 
   public sendMessage(): void {
-    const data = `Sent: ${this.message}`;
-
-    this._hubConnection.invoke('send', data);
-    this.messages.push(data);
+    this._hubConnection.invoke('send', this.message);
+    // this.messages.push(this.message);
     this.message = '';
   }
 
@@ -28,8 +26,8 @@ export class ChatComponent implements OnInit {
     this._hubConnection = new HubConnectionBuilder().withUrl(`${this.baseUrl}chathub?access_token=${token}`).build();
 
     this._hubConnection.on('send', (data: any) => {
-    const received = `Received: ${data}`;
-    this.messages.push(received);
+    // const received = `${data}`;
+    this.messages.push(data);
     });
 
     this._hubConnection.start()

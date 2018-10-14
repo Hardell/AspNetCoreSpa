@@ -7,7 +7,6 @@ namespace AspNetCoreSpa.Core.Entities
     public class ApplicationRole : IdentityRole<int>
     {
         [StringLength(250)]
-        public string Description { get; set; }
-        
+        public string Description { get; set; }        
     }
 }

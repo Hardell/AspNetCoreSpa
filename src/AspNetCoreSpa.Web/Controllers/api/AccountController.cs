@@ -46,10 +46,10 @@ namespace AspNetCoreSpa.Web.Controllers.api
         {
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+            var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, lockoutOnFailure: false);
             if (result.Succeeded)
             {
-                var user = await _userManager.FindByEmailAsync(model.Email);
+                var user = await _userManager.FindByNameAsync(model.Username);
                 var roles = await _userManager.GetRolesAsync(user);
                 _logger.LogInformation(1, "User logged in.");
                 return AppUtils.SignIn(user, roles);

@@ -170,7 +170,11 @@ namespace AspNetCoreSpa.Web.Extensions
                        // To work around this limitation, the access token is retrieved from the query string.
                        OnRetrieveToken = context =>
                        {
-                           context.Token = context.Request.Query["access_token"];
+                           var accessToken = context.Request.Query["access_token"];
+                           if (!string.IsNullOrEmpty(accessToken))
+                           {
+                               context.Token = context.Request.Query["access_token"];
+                           }
 
                            return Task.CompletedTask;
                        }

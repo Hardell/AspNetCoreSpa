@@ -3,25 +3,29 @@ using System;
 using AspNetCoreSpa.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AspNetCoreSpa.Web.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180528191321_initial")]
-    partial class initial
+    [Migration("20181013165701_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.0-rc1-32029");
+                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("AspNetCoreSpa.Core.Entities.ApplicationRole", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
@@ -39,7 +43,8 @@ namespace AspNetCoreSpa.Web.Migrations
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
-                        .HasName("RoleNameIndex");
+                        .HasName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
                 });
@@ -47,7 +52,8 @@ namespace AspNetCoreSpa.Web.Migrations
             modelBuilder.Entity("AspNetCoreSpa.Core.Entities.ApplicationUser", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("AccessFailedCount");
 
@@ -87,6 +93,8 @@ namespace AspNetCoreSpa.Web.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed");
 
+                    b.Property<int>("RoomId");
+
                     b.Property<string>("SecurityStamp");
 
                     b.Property<bool>("TwoFactorEnabled");
@@ -101,7 +109,10 @@ namespace AspNetCoreSpa.Web.Migrations
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasName("UserNameIndex");
+                        .HasName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("RoomId");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -109,7 +120,8 @@ namespace AspNetCoreSpa.Web.Migrations
             modelBuilder.Entity("AspNetCoreSpa.Core.Entities.ApplicationUserPhoto", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("ApplicationUserId");
 
@@ -125,10 +137,31 @@ namespace AspNetCoreSpa.Web.Migrations
                     b.ToTable("ApplicationUserPhotos");
                 });
 
+            modelBuilder.Entity("AspNetCoreSpa.Core.Entities.ChatRoomPhoto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ChatRoomId");
+
+                    b.Property<byte[]>("Content");
+
+                    b.Property<string>("ContentType");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChatRoomId")
+                        .IsUnique();
+
+                    b.ToTable("ChatRoomPhoto");
+                });
+
             modelBuilder.Entity("AspNetCoreSpa.Core.Entities.Culture", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name");
 
@@ -140,7 +173,8 @@ namespace AspNetCoreSpa.Web.Migrations
             modelBuilder.Entity("AspNetCoreSpa.Core.Entities.Resource", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int?>("CultureId");
 
@@ -155,10 +189,41 @@ namespace AspNetCoreSpa.Web.Migrations
                     b.ToTable("Resources");
                 });
 
+            modelBuilder.Entity("AspNetCoreSpa.Core.Entities.Room", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(250);
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(250);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Rooms");
+                });
+
+            modelBuilder.Entity("AspNetCoreSpa.Core.Entities.RoomEdge", b =>
+                {
+                    b.Property<int>("RoomId");
+
+                    b.Property<int>("AdjacentRoomId");
+
+                    b.HasKey("RoomId", "AdjacentRoomId");
+
+                    b.HasIndex("AdjacentRoomId");
+
+                    b.ToTable("RoomEdges");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ClaimType");
 
@@ -176,7 +241,8 @@ namespace AspNetCoreSpa.Web.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ClaimType");
 
@@ -366,9 +432,18 @@ namespace AspNetCoreSpa.Web.Migrations
                     b.HasIndex("AuthorizationId");
 
                     b.HasIndex("ReferenceId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[ReferenceId] IS NOT NULL");
 
                     b.ToTable("OpenIddictTokens");
+                });
+
+            modelBuilder.Entity("AspNetCoreSpa.Core.Entities.ApplicationUser", b =>
+                {
+                    b.HasOne("AspNetCoreSpa.Core.Entities.Room", "Room")
+                        .WithMany()
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("AspNetCoreSpa.Core.Entities.ApplicationUserPhoto", b =>
@@ -379,11 +454,32 @@ namespace AspNetCoreSpa.Web.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("AspNetCoreSpa.Core.Entities.ChatRoomPhoto", b =>
+                {
+                    b.HasOne("AspNetCoreSpa.Core.Entities.Room", "ChatRoom")
+                        .WithOne("Photo")
+                        .HasForeignKey("AspNetCoreSpa.Core.Entities.ChatRoomPhoto", "ChatRoomId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("AspNetCoreSpa.Core.Entities.Resource", b =>
                 {
                     b.HasOne("AspNetCoreSpa.Core.Entities.Culture", "Culture")
                         .WithMany("Resources")
                         .HasForeignKey("CultureId");
+                });
+
+            modelBuilder.Entity("AspNetCoreSpa.Core.Entities.RoomEdge", b =>
+                {
+                    b.HasOne("AspNetCoreSpa.Core.Entities.Room", "AdjacentRoom")
+                        .WithMany()
+                        .HasForeignKey("AdjacentRoomId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("AspNetCoreSpa.Core.Entities.Room", "Room")
+                        .WithMany("AdjacentRooms")
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>

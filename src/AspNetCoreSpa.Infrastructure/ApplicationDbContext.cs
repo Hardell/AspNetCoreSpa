@@ -18,6 +18,8 @@ namespace AspNetCoreSpa.Infrastructure
         public string CurrentUserId { get; internal set; }
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<ApplicationUserPhoto> ApplicationUserPhotos { get; set; }
+        public DbSet<Room> Rooms { get; set; }
+        public DbSet<RoomEdge> RoomEdges { get; set; }
         public DbSet<ApplicationRole> ApplicationRoles { get; set; }
         public DbSet<Culture> Cultures { get; set; }
         public DbSet<Resource> Resources { get; set; }
@@ -30,7 +32,7 @@ namespace AspNetCoreSpa.Infrastructure
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             foreach (var entityType in modelBuilder.Model.GetEntityTypes()
-            .Where(e => typeof(IAuditable).IsAssignableFrom(e.ClrType)))
+                .Where(e => typeof(IAuditable).IsAssignableFrom(e.ClrType)))
             {
                 modelBuilder.Entity(entityType.ClrType)
                     .Property<DateTime>("CreatedAt");
@@ -44,6 +46,16 @@ namespace AspNetCoreSpa.Infrastructure
                 modelBuilder.Entity(entityType.ClrType)
                     .Property<string>("UpdatedBy");
             }
+
+            modelBuilder.Entity<RoomEdge>()
+                .HasKey(k => new { k.RoomId, k.AdjacentRoomId });
+
+            modelBuilder.Entity<RoomEdge>()
+                .HasOne(l => l.Room)
+                .WithMany(r => r.AdjacentRooms)
+                .HasForeignKey(l => l.RoomId)
+                .OnDelete(DeleteBehavior.Restrict);
+
 
             base.OnModelCreating(modelBuilder);
             // Customize the ASP.NET Identity model and override the defaults if needed.
