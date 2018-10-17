@@ -16,6 +16,8 @@ namespace AspNetCoreSpa.Core.Entities
 
         public ChatRoomPhoto Photo { get; set; }
 
-        public virtual ICollection<RoomEdge> AdjacentRooms { get; set; } = new List<RoomEdge>();
+        public ICollection<RoomEdge> AdjacentRooms { get; set; } = new List<RoomEdge>();
+
+        public ICollection<ApplicationUser> Users { get; set; } = new List<ApplicationUser>();
     }
 }

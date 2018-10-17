@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
@@ -31,6 +32,8 @@ namespace AspNetCoreSpa.Core.Entities
         public Room Room { get; set; }
 
         public int RoomId { get; set; }
+
+        //public ICollection<Rank> Ranks { get; set; }
 
         [DataType(DataType.DateTime)]
         public DateTime TimeAccumulated;

@@ -4,58 +4,55 @@ using System.Linq;
 using System.Threading.Tasks;
 using AspNetCoreSpa.Core.Entities;
 using AspNetCoreSpa.Infrastructure;
+using AspNetCoreSpa.Infrastructure.OnlineUserManager;
+using AspNetCoreSpa.Web.Commands;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 
 namespace AspNetCoreSpa.Web.SignalR
 {
     [Authorize]
     public class Chat : Hub
     {
-        private static readonly Dictionary<string, OnlineUserStatus> onlineUsers = new Dictionary<string, OnlineUserStatus>();
         private readonly ApplicationDbContext dbContext;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly CommandFactory commandFactory;
+        private readonly OnlineUserManager onlineUserManager;
 
-        public Chat(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager)
+        public Chat(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager, CommandFactory commandFactory, OnlineUserManager onlineUserManager)
         {
             this.dbContext = dbContext;
             this.userManager = userManager;
+            this.commandFactory = commandFactory;
+            this.onlineUserManager = onlineUserManager;
         }
 
-        public async Task Send(string message)
+        public Task Send(string message)
         {
-            var username = Context.User.Identity.Name;
-
-            if (message.StartsWith(".examine"))
-            {
-                var room = dbContext.Rooms.First(r => r.Name == onlineUsers[username].currentRoom);
-
-                await Clients.Caller.SendAsync("send", JsonConvert.SerializeObject(room));
-                return;
-            }
-
-            await Clients.Group(onlineUsers[username].currentRoom).SendAsync("send", message);
+            var command = this.commandFactory.Parse(message);
+            return command.Execute(this);
         }
 
         public override async Task OnConnectedAsync()
         {
             var username = Context.User.Identity.Name;
-            var user = this.dbContext.ApplicationUsers.Include(u => u.Room).First(u => u.UserName == username);
+            var currentRoomName = this.dbContext.ApplicationUsers.Include(u => u.Room).Single(u => u.UserName == username).Room.Name;
 
-            await Groups.AddToGroupAsync(Context.ConnectionId, user.Room.Name);
-            if (!onlineUsers.ContainsKey(username))
+
+            await Groups.AddToGroupAsync(Context.ConnectionId, currentRoomName);
+            if (!this.onlineUserManager.IsUserOnline(username))
             {
-                onlineUsers.Add(username, new OnlineUserStatus { ConnectionIds = new HashSet<string> { Context.ConnectionId }, LastAction = DateTimeOffset.UtcNow, currentRoom = user.Room.Name });
+                var status = new OnlineUserStatus(username, DateTimeOffset.UtcNow, new HashSet<string> { Context.ConnectionId }, currentRoomName);
+                this.onlineUserManager.AddUserStatus(username, status);
             }
             else
             {
-                onlineUsers[username].ConnectionIds.Add(Context.ConnectionId);
+                this.onlineUserManager.AddUserConnectionId(username, Context.ConnectionId);
             }
 
-            await Clients.All.SendAsync("send", $"{user.UserName} sa prihlasil do ChatuQ.");
+            await Clients.All.SendAsync("send", $"{username} sa prihlasil do ChatuQ.");
 
             await base.OnConnectedAsync();
         }
@@ -64,13 +61,8 @@ namespace AspNetCoreSpa.Web.SignalR
         {
             var username = Context.User.Identity.Name;
 
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, onlineUsers[username].currentRoom);
-            onlineUsers[username].ConnectionIds.Remove(Context.ConnectionId);
-            if(onlineUsers[username].ConnectionIds.Count == 0)
-            {
-                onlineUsers.Remove(username);
-            }
-
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, this.onlineUserManager.GetUserRoomName(username));
+            this.onlineUserManager.RemoveUserConnectionId(username, Context.ConnectionId);
 
             await base.OnDisconnectedAsync(exception);
         }

@@ -10,8 +10,7 @@ import { routerTransition } from '../router.animations';
 })
 export class SignalrComponent {
   menus = [
-    { route: 'chat', text: 'Chat' },
-    { route: 'moveshape', text: 'Move shape' }
+    { route: 'chat', text: 'Chat' }
   ];
 
   public getState(outlet: any) {

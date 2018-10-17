@@ -439,7 +439,7 @@ namespace AspNetCoreSpa.Web.Migrations
             modelBuilder.Entity("AspNetCoreSpa.Core.Entities.ApplicationUser", b =>
                 {
                     b.HasOne("AspNetCoreSpa.Core.Entities.Room", "Room")
-                        .WithMany()
+                        .WithMany("Users")
                         .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

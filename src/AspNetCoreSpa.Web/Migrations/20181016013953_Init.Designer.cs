@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AspNetCoreSpa.Web.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20181013165701_Init")]
+    [Migration("20181016013953_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -441,7 +441,7 @@ namespace AspNetCoreSpa.Web.Migrations
             modelBuilder.Entity("AspNetCoreSpa.Core.Entities.ApplicationUser", b =>
                 {
                     b.HasOne("AspNetCoreSpa.Core.Entities.Room", "Room")
-                        .WithMany()
+                        .WithMany("Users")
                         .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

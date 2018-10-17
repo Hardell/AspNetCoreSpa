@@ -18,6 +18,8 @@ using AspNetCoreSpa.Infrastructure;
 using System.Linq;
 using AspNetCoreSpa.Core;
 using System.Threading.Tasks;
+using AspNetCoreSpa.Web.Commands;
+using AspNetCoreSpa.Infrastructure.OnlineUserManager;
 
 namespace AspNetCoreSpa.Web.Extensions
 {
@@ -269,6 +271,9 @@ namespace AspNetCoreSpa.Web.Extensions
             services.AddTransient<ApplicationDbContext>();
             services.AddTransient<UserResolverService>();
             services.AddScoped<ApiExceptionFilter>();
+            services.AddScoped<CommandFactory>();
+            services.AddSingleton<OnlineUserManager>();
+
             return services;
         }
     }

@@ -4,8 +4,6 @@ import { RouterModule } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
 import { SignalrComponent } from './signalr.component';
 import { ChatComponent } from './chat/chat.component';
-import { MoveShapeComponent } from './move-shape/move-shape.component';
-import { DraggableDirective } from './move-shape/draggable.directive';
 
 @NgModule({
     imports: [
@@ -15,17 +13,14 @@ import { DraggableDirective } from './move-shape/draggable.directive';
                 path: '', component: SignalrComponent,
                 children: [
                     { path: '', redirectTo: 'chat' },
-                    { path: 'chat', component: ChatComponent, data: { state: 'chat' } },
-                    { path: 'moveshape', component: MoveShapeComponent, data: { state: 'moveshape' } },
+                    { path: 'chat', component: ChatComponent, data: { state: 'chat' } }
                 ]
             }
         ])
     ],
     declarations: [
         SignalrComponent,
-        ChatComponent,
-        MoveShapeComponent,
-        DraggableDirective
+        ChatComponent
     ]
 })
 export class SignalrModule { }
