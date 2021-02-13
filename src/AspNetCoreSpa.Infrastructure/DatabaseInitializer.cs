@@ -10,10 +10,8 @@ using OpenIddict.Core;
 using OpenIddict.Models;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Security.Claims;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace AspNetCoreSpa.Infrastructure
@@ -80,13 +78,13 @@ namespace AspNetCoreSpa.Infrastructure
             if (!_context.RoomEdges.Any()) // todo: load this from some json resource instead
             {
                 var rooms = _context.Rooms.ToList();
-                this.CreateRoomEdge(rooms[0], rooms[1]);
-                this.CreateRoomEdge(rooms[0], rooms[2]);
-                this.CreateRoomEdge(rooms[1], rooms[2]);
-                this.CreateRoomEdge(rooms[1], rooms[3]);
-                this.CreateRoomEdge(rooms[1], rooms[0]);
-                this.CreateRoomEdge(rooms[2], rooms[0]);
-                this.CreateRoomEdge(rooms[3], rooms[0]);
+                CreateRoomEdge(rooms[0], rooms[1]);
+                CreateRoomEdge(rooms[0], rooms[2]);
+                CreateRoomEdge(rooms[1], rooms[2]);
+                CreateRoomEdge(rooms[1], rooms[3]);
+                CreateRoomEdge(rooms[1], rooms[0]);
+                CreateRoomEdge(rooms[2], rooms[0]);
+                CreateRoomEdge(rooms[3], rooms[0]);
 
                 _context.SaveChanges();
             }

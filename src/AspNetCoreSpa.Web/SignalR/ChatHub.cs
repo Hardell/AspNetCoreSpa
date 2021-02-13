@@ -16,40 +16,41 @@ namespace AspNetCoreSpa.Web.SignalR
     [Authorize]
     public class Chat : Hub
     {
-        private readonly ApplicationDbContext dbContext;
-        private readonly UserManager<ApplicationUser> userManager;
-        private readonly CommandFactory commandFactory;
-        private readonly OnlineUserManager onlineUserManager;
+        private readonly ApplicationDbContext _dbContext;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly CommandFactory _commandFactory;
+        private readonly OnlineUserManager _onlineUserManager;
 
         public Chat(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager, CommandFactory commandFactory, OnlineUserManager onlineUserManager)
         {
-            this.dbContext = dbContext;
-            this.userManager = userManager;
-            this.commandFactory = commandFactory;
-            this.onlineUserManager = onlineUserManager;
+            _dbContext = dbContext;
+            _userManager = userManager;
+            _commandFactory = commandFactory;
+            _onlineUserManager = onlineUserManager;
         }
 
         public Task Send(string message)
         {
-            var command = this.commandFactory.Parse(message);
+            var command = _commandFactory.Parse(message);
             return command.Execute(this);
         }
 
         public override async Task OnConnectedAsync()
         {
             var username = Context.User.Identity.Name;
-            var currentRoomName = this.dbContext.ApplicationUsers.Include(u => u.Room).Single(u => u.UserName == username).Room.Name;
-
+            var user = _dbContext.ApplicationUsers.Include(u => u.Room).Single(u => u.UserName == username);
+            var currentRoomName = user.Room.Name; //todo Add a default room if the existing room doesn't exist anymore.
 
             await Groups.AddToGroupAsync(Context.ConnectionId, currentRoomName);
-            if (!this.onlineUserManager.IsUserOnline(username))
+            if (!_onlineUserManager.IsUserOnline(username))
             {
-                var status = new OnlineUserStatus(username, DateTimeOffset.UtcNow, new HashSet<string> { Context.ConnectionId }, currentRoomName);
-                this.onlineUserManager.AddUserStatus(username, status);
+                var status = new OnlineUserStatus(username, DateTimeOffset.UtcNow, new HashSet<string> { Context.ConnectionId }, currentRoomName, new StopWatchWithOffset(user.TimeAccumulated));
+                status.StopWatch.Start();
+                _onlineUserManager.AddUserStatus(username, status);
             }
             else
             {
-                this.onlineUserManager.AddUserConnectionId(username, Context.ConnectionId);
+                _onlineUserManager.AddUserConnectionId(username, Context.ConnectionId);
             }
 
             await Clients.All.SendAsync("send", $"{username} sa prihlasil do ChatuQ.");
@@ -61,8 +62,17 @@ namespace AspNetCoreSpa.Web.SignalR
         {
             var username = Context.User.Identity.Name;
 
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, this.onlineUserManager.GetUserRoomName(username));
-            this.onlineUserManager.RemoveUserConnectionId(username, Context.ConnectionId);
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, _onlineUserManager.GetUserRoomName(username));
+            var status = _onlineUserManager.RemoveUserConnectionId(username, Context.ConnectionId);
+
+            if(!status.ConnectionIds.Any())
+            {
+                var user = await _userManager.FindByNameAsync(username);
+                user.TimeAccumulated = status.StopWatch.ElapsedTimeSpan;
+                user.RoomId = _dbContext.Rooms.First(r => r.Name == status.CurrentRoomName).Id;;
+                
+                await _userManager.UpdateAsync(user);
+            }
 
             await base.OnDisconnectedAsync(exception);
         }

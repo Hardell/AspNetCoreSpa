@@ -14,13 +14,13 @@ namespace AspNetCoreSpa.Web.Filters
 
         public ApiError(string message)
         {
-            this.Message = message;
+            Message = message;
             isError = true;
         }
 
         public ApiError(ModelStateDictionary modelState)
         {
-            this.isError = true;
+            isError = true;
             Message = "Validation Failed";
             Errors = modelState.Keys
                     .SelectMany(key => modelState[key].Errors.Select(x => new ValidationError(key, x.ErrorMessage)))

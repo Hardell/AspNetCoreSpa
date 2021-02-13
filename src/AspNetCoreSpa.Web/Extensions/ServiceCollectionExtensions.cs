@@ -220,12 +220,14 @@ namespace AspNetCoreSpa.Web.Extensions
                 if (useInMemory.ToLower() == "true")
                 {
                     options.UseInMemoryDatabase("AspNetCoreSpa"); // Takes database name
+                    options.EnableSensitiveDataLogging();
                 }
                 else if (useSqLite.ToLower() == "true")
                 {
                     var connection = Startup.Configuration["Data:SqlLiteConnectionString"];
                     options.UseSqlite(connection);
                     options.UseSqlite(connection, b => b.MigrationsAssembly("AspNetCoreSpa.Web"));
+                    options.EnableSensitiveDataLogging();
                 }
                 else
                 {
@@ -271,8 +273,12 @@ namespace AspNetCoreSpa.Web.Extensions
             services.AddTransient<ApplicationDbContext>();
             services.AddTransient<UserResolverService>();
             services.AddScoped<ApiExceptionFilter>();
-            services.AddScoped<CommandFactory>();
+            services.AddTransient<CommandFactory>();
             services.AddSingleton<OnlineUserManager>();
+
+            //services.AddScoped<OnlineTimeCounterService>();   // todo clean this up
+
+            //services.AddHostedService<ConsumeScopedServiceHostedService>();
 
             return services;
         }

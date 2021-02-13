@@ -69,7 +69,7 @@ namespace AspNetCoreSpa.Infrastructure
         /// <returns></returns>
         public override int SaveChanges()
         {
-            this.AuditEntities();
+            AuditEntities();
             return base.SaveChanges();
         }
         /// <summary>
@@ -78,7 +78,7 @@ namespace AspNetCoreSpa.Infrastructure
         /// <returns></returns>
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            this.AuditEntities();
+            AuditEntities();
 
             return await base.SaveChangesAsync(cancellationToken);
         }

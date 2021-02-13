@@ -9,7 +9,7 @@ using System;
 namespace AspNetCoreSpa.Web.Integration
 {
     #region snippet1
-    public class CustomWebApplicationFactory<TStartup> : WebApplicationFactory<AspNetCoreSpa.Web.Startup>
+    public class CustomWebApplicationFactory<TStartup> : WebApplicationFactory<Startup>
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {

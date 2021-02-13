@@ -3,9 +3,6 @@ using AspNetCoreSpa.Infrastructure;
 using AspNetCoreSpa.Infrastructure.OnlineUserManager;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace AspNetCoreSpa.Web.Commands

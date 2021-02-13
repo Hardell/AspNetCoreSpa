@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
@@ -10,7 +9,7 @@ namespace AspNetCoreSpa.Core.Entities
     {
         public ApplicationUser()
         {
-            this.TimeAccumulated = new DateTime(0);
+            TimeAccumulated = TimeSpan.Zero;
         }
 
         public bool IsEnabled { get; set; }
@@ -33,19 +32,11 @@ namespace AspNetCoreSpa.Core.Entities
 
         public int RoomId { get; set; }
 
+        public TimeSpan TimeAccumulated { get; set; }
+
         //public ICollection<Rank> Ranks { get; set; }
 
-        [DataType(DataType.DateTime)]
-        public DateTime TimeAccumulated;
-
         [NotMapped]
-        public string Name
-        {
-            get
-            {
-                return this.FirstName + " " + this.LastName;
-            }
-        }
-
+        public string Name => FirstName + " " + LastName;
     }
 }

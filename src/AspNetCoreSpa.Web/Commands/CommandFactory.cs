@@ -11,15 +11,15 @@ namespace AspNetCoreSpa.Web.Commands
 {
     public class CommandFactory
     {
-        private readonly ApplicationDbContext dbContext;
-        private readonly UserManager<ApplicationUser> userManager;
-        private readonly OnlineUserManager onlineUserManager;
+        private readonly ApplicationDbContext _dbContext;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly OnlineUserManager _onlineUserManager;
 
         public CommandFactory(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager, OnlineUserManager onlineUserManager)
         {
-            this.dbContext = dbContext;
-            this.userManager = userManager;
-            this.onlineUserManager = onlineUserManager;
+            _dbContext = dbContext;
+            _userManager = userManager;
+            _onlineUserManager = onlineUserManager;
         }
 
         public Command Parse(string message)
@@ -31,22 +31,22 @@ namespace AspNetCoreSpa.Web.Commands
 
             if (!message.StartsWith(".") || message.StartsWith("..."))
             {
-                return new TalkCommand(this.dbContext, this.userManager, this.onlineUserManager, message);
+                return new TalkCommand(_dbContext, _userManager, _onlineUserManager, message);
             }
 
             var command = message.Split(" ").First();
             
             if (string.Compare(command, ".go", CultureInfo.CurrentCulture, CompareOptions.IgnoreNonSpace | CompareOptions.IgnoreCase) == 0)
             {
-                return new GoCommand(this.dbContext, this.userManager, this.onlineUserManager, message.Length <= 4 ? null : message.Substring(4));
+                return new GoCommand(_dbContext, _userManager, _onlineUserManager, message.Length <= 4 ? null : message.Substring(4));
             }
             if (string.Compare(command, ".talk", CultureInfo.CurrentCulture, CompareOptions.IgnoreNonSpace | CompareOptions.IgnoreCase) == 0)
             {
-                return new TalkCommand(this.dbContext, this.userManager, this.onlineUserManager, message.Length <= 6 ? null : message.Substring(6));
+                return new TalkCommand(_dbContext, _userManager, _onlineUserManager, message.Length <= 6 ? null : message.Substring(6));
             }
             if (string.Compare(command, ".look", CultureInfo.CurrentCulture, CompareOptions.IgnoreNonSpace | CompareOptions.IgnoreCase) == 0)
             {
-                return new LookCommand(this.dbContext, this.userManager, this.onlineUserManager);
+                return new LookCommand(_dbContext, _userManager, _onlineUserManager);
             }
 
             throw new InvalidOperationException("Zly prikaz."); // return an error command

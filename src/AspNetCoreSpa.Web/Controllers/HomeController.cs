@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Http;
 using System;
 using AspNetCoreSpa.Core.Entities;
-using Microsoft.AspNetCore.Http.Features;
 
 namespace AspNetCoreSpa.Web.Controllers
 {

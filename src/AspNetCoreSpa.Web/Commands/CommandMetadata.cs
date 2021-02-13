@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace AspNetCoreSpa.Web.Commands
+﻿namespace AspNetCoreSpa.Web.Commands
 {
     class CommandMetadata
     {

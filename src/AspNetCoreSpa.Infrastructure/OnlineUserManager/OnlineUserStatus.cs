@@ -1,17 +1,17 @@
-﻿using AspNetCoreSpa.Core.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace AspNetCoreSpa.Infrastructure.OnlineUserManager
 {
     public class OnlineUserStatus
     {
-        public OnlineUserStatus(string username, DateTimeOffset lastAction, HashSet<string> connectionIds, string currentRoomName)
+        public OnlineUserStatus(string username, DateTimeOffset lastAction, HashSet<string> connectionIds, string currentRoomName, StopWatchWithOffset stopWatch)
         {
-            this.Username = username;
-            this.LastAction = lastAction;
-            this.ConnectionIds = connectionIds;
-            this.CurrentRoomName = currentRoomName;
+            Username = username;
+            LastAction = lastAction;
+            ConnectionIds = connectionIds;
+            CurrentRoomName = currentRoomName;
+            StopWatch = stopWatch;
         }
 
         public string Username { get; }
@@ -21,5 +21,7 @@ namespace AspNetCoreSpa.Infrastructure.OnlineUserManager
         public HashSet<string> ConnectionIds { get; }
 
         public string CurrentRoomName { get; set; }
+
+        public StopWatchWithOffset StopWatch { get; }
     }
 }
