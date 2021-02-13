@@ -20,6 +20,11 @@ namespace AspNetCoreSpa.Infrastructure.OnlineUserManager
             return _onlineUsers[username].CurrentRoomName;
         }
 
+        public List<string> GetUsernamesInRoom(string roomName)
+        {
+            return _onlineUsers.Values.Where(s => s.CurrentRoomName == roomName).Select(s => s.Username).ToList();
+        }
+
         public void AddUserStatus(string username, OnlineUserStatus userStatus)
         {
             if (!_onlineUsers.TryAdd(username, userStatus))
