@@ -276,9 +276,8 @@ namespace AspNetCoreSpa.Web.Extensions
             services.AddTransient<CommandFactory>();
             services.AddSingleton<OnlineUserManager>();
 
-            //services.AddScoped<OnlineTimeCounterService>();   // todo clean this up
-
-            //services.AddHostedService<ConsumeScopedServiceHostedService>();
+            services.AddScoped<MoneyService>();
+            services.AddHostedService<ConsumeScopedServiceHostedService>();
 
             return services;
         }

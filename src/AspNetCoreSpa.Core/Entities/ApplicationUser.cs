@@ -33,6 +33,10 @@ namespace AspNetCoreSpa.Core.Entities
         public int RoomId { get; set; }
 
         public TimeSpan TimeAccumulated { get; set; }
+        
+        public int Money { get; set; }
+
+        public ushort MoneyAssignedCounter { get; set; }
 
         //public ICollection<Rank> Ranks { get; set; }
 

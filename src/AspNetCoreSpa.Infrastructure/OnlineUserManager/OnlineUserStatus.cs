@@ -5,13 +5,21 @@ namespace AspNetCoreSpa.Infrastructure.OnlineUserManager
 {
     public class OnlineUserStatus
     {
-        public OnlineUserStatus(string username, DateTimeOffset lastAction, HashSet<string> connectionIds, string currentRoomName, StopWatchWithOffset stopWatch)
+        public OnlineUserStatus(string username,
+            DateTimeOffset lastAction,
+            HashSet<string> connectionIds,
+            string currentRoomName,
+            StopWatchWithOffset timeAccumulated,
+            int money,
+            ushort moneyAssignedCounter)
         {
             Username = username;
             LastAction = lastAction;
             ConnectionIds = connectionIds;
             CurrentRoomName = currentRoomName;
-            StopWatch = stopWatch;
+            TimeAccumulated = timeAccumulated;
+            Money = money;
+            MoneyAssignedCounter = moneyAssignedCounter;
         }
 
         public string Username { get; }
@@ -22,6 +30,10 @@ namespace AspNetCoreSpa.Infrastructure.OnlineUserManager
 
         public string CurrentRoomName { get; set; }
 
-        public StopWatchWithOffset StopWatch { get; }
+        public StopWatchWithOffset TimeAccumulated { get; }
+        
+        public int Money { get; set; }
+
+        public ushort MoneyAssignedCounter { get; set; }
     }
 }

@@ -17,7 +17,7 @@ namespace AspNetCoreSpa.Web.Commands.Implementations
         public GoCommand(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager, OnlineUserManager onlineUserManager, string destination) 
             : base(dbContext, userManager, onlineUserManager)
         {
-            this._destination = destination;
+            _destination = destination;
         }
 
         public override async Task Execute(Hub hub)

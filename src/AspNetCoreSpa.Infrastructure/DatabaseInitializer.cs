@@ -56,13 +56,14 @@ namespace AspNetCoreSpa.Infrastructure
             CreateRoomEdges();
             CreateRoles();
             CreateUsers();
+            CreateDefaultSettings();
             AddLocalisedData();
             await AddOpenIdConnectOptions(configuration);
         }
         
         private void CreateRooms()
         {
-            if (!_context.Rooms.Any()) // todo: load this from some json resource instead
+            if (!_context.Rooms.Any()) // todo: figure out a better way to do this...
             {
                 var namestie = new Room { Name = "Námestie", Description = "Nieco velmi zaujiamve." };
                 var ulica = new Room { Name = "Ulica", Description = "Nieco velmi zaujiamve." };
@@ -72,10 +73,23 @@ namespace AspNetCoreSpa.Infrastructure
                 _context.SaveChanges();
             }
         }
+        
+        private void CreateDefaultSettings()
+        {
+            if (!_context.ChatQSettings.Any())
+            {
+                _context.ChatQSettings.Add(new ChatQSettings
+                {
+                    MoneyPerHour = 333,
+                    MoneyServiceDelay = 30000
+                });
+                _context.SaveChanges();
+            }
+        }
 
         private void CreateRoomEdges()
         {
-            if (!_context.RoomEdges.Any()) // todo: load this from some json resource instead
+            if (!_context.RoomEdges.Any()) // todo: figure out a better way to do this...
             {
                 var rooms = _context.Rooms.ToList();
                 CreateRoomEdge(rooms[0], rooms[1]);

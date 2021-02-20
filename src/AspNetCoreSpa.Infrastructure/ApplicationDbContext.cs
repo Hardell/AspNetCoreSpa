@@ -23,6 +23,7 @@ namespace AspNetCoreSpa.Infrastructure
         public DbSet<ApplicationRole> ApplicationRoles { get; set; }
         public DbSet<Culture> Cultures { get; set; }
         public DbSet<Resource> Resources { get; set; }
+        public DbSet<ChatQSettings> ChatQSettings { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, UserResolverService userService) : base(options)
         {
@@ -50,12 +51,11 @@ namespace AspNetCoreSpa.Infrastructure
             modelBuilder.Entity<RoomEdge>()
                 .HasKey(k => new { k.RoomId, k.AdjacentRoomId });
 
-            modelBuilder.Entity<RoomEdge>()
+            modelBuilder.Entity<RoomEdge>()     //todo how does this even work?
                 .HasOne(l => l.Room)
                 .WithMany(r => r.AdjacentRooms)
                 .HasForeignKey(l => l.RoomId)
                 .OnDelete(DeleteBehavior.Restrict);
-
 
             base.OnModelCreating(modelBuilder);
             // Customize the ASP.NET Identity model and override the defaults if needed.

@@ -44,8 +44,14 @@ namespace AspNetCoreSpa.Web.SignalR
             await Groups.AddToGroupAsync(Context.ConnectionId, currentRoomName);
             if (!_onlineUserManager.IsUserOnline(username))
             {
-                var status = new OnlineUserStatus(username, DateTimeOffset.UtcNow, new HashSet<string> { Context.ConnectionId }, currentRoomName, new StopWatchWithOffset(user.TimeAccumulated));
-                status.StopWatch.Start();
+                var status = new OnlineUserStatus(username,
+                    DateTimeOffset.UtcNow,
+                    new HashSet<string> { Context.ConnectionId },
+                    currentRoomName,
+                    new StopWatchWithOffset(user.TimeAccumulated),
+                    user.Money,
+                    user.MoneyAssignedCounter);
+                status.TimeAccumulated.Start();
                 _onlineUserManager.AddUserStatus(username, status);
             }
             else
@@ -68,8 +74,10 @@ namespace AspNetCoreSpa.Web.SignalR
             if(!status.ConnectionIds.Any())
             {
                 var user = await _userManager.FindByNameAsync(username);
-                user.TimeAccumulated = status.StopWatch.ElapsedTimeSpan;
-                user.RoomId = _dbContext.Rooms.First(r => r.Name == status.CurrentRoomName).Id;;
+                user.TimeAccumulated = status.TimeAccumulated.ElapsedTimeSpan;
+                user.RoomId = _dbContext.Rooms.First(r => r.Name == status.CurrentRoomName).Id;
+                user.MoneyAssignedCounter = status.MoneyAssignedCounter;
+                user.Money = status.Money;
                 
                 await _userManager.UpdateAsync(user);
             }

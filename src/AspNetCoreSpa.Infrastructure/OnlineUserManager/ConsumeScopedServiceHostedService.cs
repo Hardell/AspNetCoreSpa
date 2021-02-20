@@ -1,37 +1,39 @@
-﻿using AspNetCoreSpa.Infrastructure.OnlineUserManager;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
-public class ConsumeScopedServiceHostedService : BackgroundService
+namespace AspNetCoreSpa.Infrastructure.OnlineUserManager
 {
-    public ConsumeScopedServiceHostedService(IServiceProvider services)
+    public class ConsumeScopedServiceHostedService : BackgroundService
     {
-        Services = services;
-    }
-
-    public IServiceProvider Services { get; }
-
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-    {
-        await DoWork(stoppingToken);
-    }
-
-    private async Task DoWork(CancellationToken stoppingToken)
-    {
-
-        using (var scope = Services.CreateScope())
+        public ConsumeScopedServiceHostedService(IServiceProvider services)
         {
-            var scopedProcessingService = scope.ServiceProvider.GetRequiredService<OnlineTimeCounterService>();
-
-            await scopedProcessingService.Count(stoppingToken);
+            Services = services;
         }
-    }
 
-    public override async Task StopAsync(CancellationToken stoppingToken)
-    {
-        await base.StopAsync(stoppingToken);
+        private IServiceProvider Services { get; }
+
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            await DoWork(stoppingToken);
+        }
+
+        private async Task DoWork(CancellationToken stoppingToken)
+        {
+
+            using (var scope = Services.CreateScope())
+            {
+                var scopedProcessingService = scope.ServiceProvider.GetRequiredService<MoneyService>();
+
+                await scopedProcessingService.Count(stoppingToken);
+            }
+        }
+
+        public override async Task StopAsync(CancellationToken stoppingToken)
+        {
+            await base.StopAsync(stoppingToken);
+        }
     }
 }
