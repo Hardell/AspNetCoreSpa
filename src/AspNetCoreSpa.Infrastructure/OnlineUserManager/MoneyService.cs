@@ -23,7 +23,6 @@ namespace AspNetCoreSpa.Infrastructure.OnlineUserManager
 
         public async Task Count(CancellationToken cancellationToken)
         {
-            
             while (!cancellationToken.IsCancellationRequested)
             {
                 try
@@ -36,16 +35,7 @@ namespace AspNetCoreSpa.Infrastructure.OnlineUserManager
                     // log sth
                 }
                 
-                var onlineUsers = _onlineUserManager.GetOnlineUserStatuses();
-                
-                foreach (var onlineUser in onlineUsers)
-                {
-                    if (onlineUser.MoneyAssignedCounter < onlineUser.TimeAccumulated.ElapsedTimeSpan.TotalHours)
-                    {
-                        onlineUser.Money += _moneyPerHour;
-                        onlineUser.MoneyAssignedCounter++;
-                    }
-                }
+                _onlineUserManager.AddMoneyForTimeAccumulated(_moneyPerHour);
                 
                 await Task.Delay(_delayInMs, cancellationToken);   
             }

@@ -15,7 +15,7 @@ namespace AspNetCoreSpa.Web.Commands.Implementations
         public TalkCommand(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager, OnlineUserManager onlineUserManager, string message) 
             : base(dbContext, userManager, onlineUserManager)
         {
-            this._message = message;
+            _message = message;
         }
 
         public override Task Execute(Hub hub)
@@ -29,7 +29,7 @@ namespace AspNetCoreSpa.Web.Commands.Implementations
             }
 
             var response = new CommandResponse { Command = "talk", Content = username + ": " + _message };
-            return hub.Clients.Group(onlineUserManager.GetUserRoomName(username)).SendAsync("send", JsonConvert.SerializeObject(response));
+            return hub.Clients.Group(OnlineUserManager.GetUserRoomName(username)).SendAsync("send", JsonConvert.SerializeObject(response));
         }
     }
 }

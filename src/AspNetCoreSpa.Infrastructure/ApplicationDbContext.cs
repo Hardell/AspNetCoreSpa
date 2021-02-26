@@ -49,7 +49,7 @@ namespace AspNetCoreSpa.Infrastructure
             }
 
             modelBuilder.Entity<RoomEdge>()
-                .HasKey(k => new { k.RoomId, k.AdjacentRoomId });
+                .HasKey(k => new { RoomName = k.RoomId, AdjacentRoomName = k.AdjacentRoomId });
 
             modelBuilder.Entity<RoomEdge>()     //todo how does this even work?
                 .HasOne(l => l.Room)

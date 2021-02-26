@@ -65,10 +65,10 @@ namespace AspNetCoreSpa.Infrastructure
         {
             if (!_context.Rooms.Any()) // todo: figure out a better way to do this...
             {
-                var namestie = new Room { Name = "Námestie", Description = "Nieco velmi zaujiamve." };
-                var ulica = new Room { Name = "Ulica", Description = "Nieco velmi zaujiamve." };
-                var mestskaBrana = new Room { Name = "Mestska Brana", Description = "Nieco velmi zaujiamve." };
-                var tesco = new Room { Name = "Tesco", Description = "Nieco velmi zaujiamve." };
+                var namestie = new Room { Id = "Námestie", Description = "Nieco velmi zaujiamve." };
+                var ulica = new Room { Id = "Ulica", Description = "Nieco velmi zaujiamve." };
+                var mestskaBrana = new Room { Id = "Mestska Brana", Description = "Nieco velmi zaujiamve." };
+                var tesco = new Room { Id = "Tesco", Description = "Nieco velmi zaujiamve." };
                 _context.Rooms.AddRange(namestie, ulica, mestskaBrana, tesco);
                 _context.SaveChanges();
             }
@@ -112,7 +112,7 @@ namespace AspNetCoreSpa.Infrastructure
 
         private void CreateRoles()
         {
-            var rolesToAdd = new List<ApplicationRole>(){
+            var rolesToAdd = new List<ApplicationRole> {
                 new ApplicationRole { Name= "Admin", Description = "Full rights role"},
                 new ApplicationRole { Name= "User", Description = "Limited rights role"}
             };
@@ -127,7 +127,7 @@ namespace AspNetCoreSpa.Infrastructure
 
         private void CreateUsers()
         {
-            var defaultRoom = _context.Rooms.Find(1);
+            var defaultRoom = _context.Rooms.Find("Námestie");
             if (!_context.ApplicationUsers.Any())
             {
                 var adminUser = new ApplicationUser { UserName = "Admin123", FirstName = "Admin first", LastName = "Admin last", Email = "admin@admin.com", Mobile = "0123456789", EmailConfirmed = true, CreatedDate = DateTime.Now, IsEnabled = true, RoomId = defaultRoom.Id };

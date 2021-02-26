@@ -8,19 +8,19 @@ namespace AspNetCoreSpa.Web.Filters
     public class ApiError
     {
         public string Message { get; set; }
-        public bool isError { get; set; }
-        public string detail { get; set; }
+        public bool IsError { get; set; }
+        public string Detail { get; set; }
         public List<ValidationError> Errors { get; set; }
 
         public ApiError(string message)
         {
             Message = message;
-            isError = true;
+            IsError = true;
         }
 
         public ApiError(ModelStateDictionary modelState)
         {
-            isError = true;
+            IsError = true;
             Message = "Validation Failed";
             Errors = modelState.Keys
                     .SelectMany(key => modelState[key].Errors.Select(x => new ValidationError(key, x.ErrorMessage)))

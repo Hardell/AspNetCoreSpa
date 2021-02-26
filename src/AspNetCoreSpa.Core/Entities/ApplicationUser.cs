@@ -30,7 +30,7 @@ namespace AspNetCoreSpa.Core.Entities
 
         public Room Room { get; set; }
 
-        public int RoomId { get; set; }
+        public string RoomId { get; set; }
 
         public TimeSpan TimeAccumulated { get; set; }
         

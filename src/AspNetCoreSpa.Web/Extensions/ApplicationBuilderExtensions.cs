@@ -37,7 +37,7 @@ namespace AspNetCoreSpa.Web.Extensions
                             .Self();
 
                         // Allow AJAX, WebSocket and EventSource connections to:
-                        var socketUrl = Startup.Configuration["HostUrl"].ToString().Replace("http://", "ws://", StringComparison.OrdinalIgnoreCase).Replace("https://", "wss://", StringComparison.OrdinalIgnoreCase);
+                        var socketUrl = Startup.Configuration["HostUrl"].Replace("http://", "ws://", StringComparison.OrdinalIgnoreCase).Replace("https://", "wss://", StringComparison.OrdinalIgnoreCase);
 
                         builder.AddConnectSrc()
                             .Self()
@@ -98,7 +98,7 @@ namespace AspNetCoreSpa.Web.Extensions
         }
         public static IApplicationBuilder AddDevMiddlewares(this IApplicationBuilder app)
         {
-            var env = app.ApplicationServices.GetRequiredService<IHostingEnvironment>();
+            // var env = app.ApplicationServices.GetRequiredService<IHostingEnvironment>();
             var loggerFactory = app.ApplicationServices.GetRequiredService<ILoggerFactory>();
 
             loggerFactory.AddConsole(Startup.Configuration.GetSection("Logging"));

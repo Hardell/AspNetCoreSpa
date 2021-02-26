@@ -9,17 +9,17 @@ namespace AspNetCoreSpa.Web.Commands
 {
     public abstract class Command
     {
-        protected readonly ApplicationDbContext dbContext;
+        protected readonly ApplicationDbContext DbContext;
 
-        protected readonly UserManager<ApplicationUser> userManager;
+        protected readonly UserManager<ApplicationUser> UserManager;
 
-        protected readonly OnlineUserManager onlineUserManager;
+        protected readonly OnlineUserManager OnlineUserManager;
 
         protected Command(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager, OnlineUserManager onlineUserManager)
         {
-            this.dbContext = dbContext;
-            this.userManager = userManager;
-            this.onlineUserManager = onlineUserManager;
+            DbContext = dbContext;
+            UserManager = userManager;
+            OnlineUserManager = onlineUserManager;
         }
 
         public abstract Task Execute(Hub hub);

@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AspNetCoreSpa.Core.Entities
 {
-    public class Room : IEntityBase
+    public class Room
     {
         [Key]
-        public int Id { get; set; }
-
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [StringLength(250)]
-        public string Name { get; set; }
+        public string Id { get; set; }
 
         [StringLength(250)]
         public string Description { get; set; }

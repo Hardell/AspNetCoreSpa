@@ -6,10 +6,10 @@ namespace AspNetCoreSpa.Core.Entities
     {
         [JsonIgnore]
         public Room Room { get; set; }
-        public int RoomId { get; set; }
+        public string RoomId { get; set; }
 
         [JsonIgnore]
         public Room AdjacentRoom { get; set; }
-        public int AdjacentRoomId { get; set; }
+        public string AdjacentRoomId { get; set; }
     }
 }

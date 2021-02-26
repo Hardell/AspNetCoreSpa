@@ -56,7 +56,7 @@ namespace AspNetCoreSpa.Web.Filters
                 }
 
                 apiError = new ApiError(msg);
-                apiError.detail = stack;
+                apiError.Detail = stack;
 
                 context.HttpContext.Response.StatusCode = 500;
 

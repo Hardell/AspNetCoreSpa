@@ -32,23 +32,23 @@ namespace AspNetCoreSpa.Web.Commands.Implementations
                 return;
             }
 
-            var newRoom = dbContext.Rooms.FirstOrDefault(r => string.Compare(r.Name, _destination, CultureInfo.CurrentCulture, CompareOptions.IgnoreNonSpace | CompareOptions.IgnoreCase) == 0);
-            var oldRoom = onlineUserManager.GetUserRoomName(username);
-            var adjacentRooms = dbContext.RoomEdges.Where(r => r.AdjacentRoomId == newRoom.Id && r.Room.Name == oldRoom);
+            var newRoom = DbContext.Rooms.FirstOrDefault(r => string.Compare(r.Id, _destination, CultureInfo.InvariantCulture, CompareOptions.IgnoreNonSpace | CompareOptions.IgnoreCase) == 0);
+            var oldRoom = OnlineUserManager.GetUserRoomName(username);
+            var adjacentRooms = DbContext.RoomEdges.Where(r => r.AdjacentRoomId == newRoom.Id && r.Room.Id == oldRoom);
 
             if (newRoom != null && adjacentRooms.Any())
             {
-                await hub.Clients.Group(oldRoom).SendAsync("send", $"{username} odisiel do {newRoom.Name}.");
+                await hub.Clients.Group(oldRoom).SendAsync("send", $"{username} odisiel do miestnosti {newRoom.Id}.");
                 await hub.Groups.RemoveFromGroupAsync(hub.Context.ConnectionId, oldRoom);
 
-                var user = await userManager.FindByNameAsync(username);
+                var user = await UserManager.FindByNameAsync(username);
                 user.RoomId = newRoom.Id;
-                await userManager.UpdateAsync(user);
-                onlineUserManager.UpdateUserRoom(username, newRoom.Name);
+                await UserManager.UpdateAsync(user);
+                await OnlineUserManager.UpdateUserRoom(username, newRoom.Id);
 
-                await hub.Groups.AddToGroupAsync(hub.Context.ConnectionId, newRoom.Name);
-                await hub.Clients.OthersInGroup(newRoom.Name).SendAsync("send", $"{username} prisiel do miestnosti.");
-                await hub.Clients.Caller.SendAsync("send", $"Ocitol si sa na {newRoom.Name}.");
+                await hub.Groups.AddToGroupAsync(hub.Context.ConnectionId, newRoom.Id);
+                await hub.Clients.OthersInGroup(newRoom.Id).SendAsync("send", $"{username} prisiel do miestnosti.");
+                await hub.Clients.Caller.SendAsync("send", $"Prisiel si do miestnosti {newRoom.Id}.");
             }
             else
             {

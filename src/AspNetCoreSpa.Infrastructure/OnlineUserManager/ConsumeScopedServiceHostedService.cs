@@ -22,7 +22,6 @@ namespace AspNetCoreSpa.Infrastructure.OnlineUserManager
 
         private async Task DoWork(CancellationToken stoppingToken)
         {
-
             using (var scope = Services.CreateScope())
             {
                 var scopedProcessingService = scope.ServiceProvider.GetRequiredService<MoneyService>();

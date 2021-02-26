@@ -21,10 +21,10 @@ namespace AspNetCoreSpa.Web.Commands.Implementations
         {
             var username = hub.Context.User.Identity.Name;
 
-            var currentRoomName = onlineUserManager.GetUserRoomName(username);
-            var otherUsers = onlineUserManager.GetUsernamesInRoom(currentRoomName);
+            var currentRoomName = OnlineUserManager.GetUserRoomName(username);
+            var otherUsers = OnlineUserManager.GetUsernamesInRoom(currentRoomName);
 
-            var adjacentRoomNames = dbContext.Rooms.Include(r => r.AdjacentRooms).ThenInclude(r => r.AdjacentRoom).Single(r => r.Name == currentRoomName).AdjacentRooms.Select(r => r.AdjacentRoom.Name).ToList();
+            var adjacentRoomNames = DbContext.Rooms.Include(r => r.AdjacentRooms).ThenInclude(r => r.AdjacentRoom).Single(r => r.Id == currentRoomName).AdjacentRooms.Select(r => r.AdjacentRoom.Id).ToList();
             await hub.Clients.Caller.SendAsync("send", $"Si na {currentRoomName}. Ludia v miestnosti: {string.Join(", ", otherUsers)} Mozes ist do {JsonConvert.SerializeObject(adjacentRoomNames)}");
         }
     }

@@ -233,3 +233,4 @@ _Pvt_Extensions/
 ModelManifest.xml
 /Properties/PublishProfiles/*
 /src/AspNetCoreSpa.Web/Properties/PublishProfiles/aspnetcorespa - Web Deploy.pubxml
+/.idea/.idea.AspNetCoreSpa/.idea
